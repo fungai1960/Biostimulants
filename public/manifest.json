@@ -1,0 +1,57 @@
+﻿{
+    "shortcuts":  [
+                      {
+                          "url":  "/brew",
+                          "name":  "Open Brew Calculator",
+                          "description":  "Jump straight to brew planning",
+                          "short_name":  "Brew"
+                      },
+                      {
+                          "url":  "/inventory",
+                          "name":  "Open Inventory",
+                          "description":  "Manage on-hand inputs",
+                          "short_name":  "Inventory"
+                      },
+                      {
+                          "url":  "/logs",
+                          "name":  "Open Logs",
+                          "description":  "Review application records",
+                          "short_name":  "Logs"
+                      }
+                  ],
+    "description":  "Offline-first assistant for brewing and applying biologically-driven soil amendments.",
+    "short_name":  "SBA",
+    "background_color":  "#f9fafb",
+    "icons":  [
+                  {
+                      "purpose":  "any",
+                      "type":  "image/png",
+                      "sizes":  "192x192",
+                      "src":  "/icons/icon-192.png"
+                  },
+                  {
+                      "purpose":  "any",
+                      "type":  "image/png",
+                      "sizes":  "512x512",
+                      "src":  "/icons/icon-512.png"
+                  },
+                  {
+                      "purpose":  "maskable",
+                      "type":  "image/png",
+                      "sizes":  "512x512",
+                      "src":  "/icons/icon-512-maskable.png"
+                  }
+              ],
+    "lang":  "en",
+    "theme_color":  "#16a34a",
+    "display":  "standalone",
+    "name":  "Soil Biostimulant Assistant",
+    "categories":  [
+                       "productivity",
+                       "utilities",
+                       "education",
+                       "science"
+                   ],
+    "scope":  "/",
+    "start_url":  "/"
+}
