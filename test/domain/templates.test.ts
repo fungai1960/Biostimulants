@@ -25,7 +25,8 @@ describe('buildStageRecipe', () => {
       carbsPerL: 7,
     });
     const molasses = recipe.find((item) => item.id === 'molasses');
-    expect(molasses?.amount).toMatch(/5 ml\/L per L/);
+    expect(molasses?.amount).toMatch(/5 ml per L/);
+    expect(molasses?.amount).not.toMatch(/ml\/L/);
   });
 
   it('marks on-hand items in notes', () => {

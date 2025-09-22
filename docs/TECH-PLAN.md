@@ -31,6 +31,18 @@
 - PouchDB in browser, replicate to CouchDB-compatible endpoint.
 - Conflict strategy: last-write-wins with user-visible merge for critical entities (recipes, logs).
 
+### Local persistence: brew calculator
+- IndexedDB database `sba-settings` (via PouchDB) keeps brew form state and presets.
+- Document `brew` mirrors the last active form snapshot so offline reloads resume where the user stopped.
+- Document `brew-presets` stores an `items` array; each preset contains:
+  - `id` and `name` (UI identifier)
+  - availability flags: `yuccaAvailable`, `aloeAvailable`, optional `region`
+  - form inputs: `aloePercent`, `volumeLiters`, `stage`
+  - carbohydrate config: `includeCarbs`, `carbsDoseMlPerL`, `carbsUnit`, `carbsSource`, `carbsSourceKey`
+  - entries persist when the user clicks "Save current as preset" and are merged back on apply
+- Applying a preset marks carbohydrate fields as user-edited so later stage switches cannot overwrite its saved dosing plan.
+
+
 5) i18n & Localization
 - All copy via translation keys. Metric/imperial conversions. Date/number locale formatting.
 
@@ -55,3 +67,13 @@
 ## Open Questions (to validate during MVP)
 - Which cloud sync (Self-host CouchDB vs. Cloudant vs. Supabase) given user base? Start with CouchDB.
 - Minimum OS/browser targets for field devices.
+## Deployment Checklist
+- Run `npm run verify` (lint + unit tests) before packaging.
+  - Latest Lighthouse (Chrome, mobile Insights mode, localhost:/logs): Performance 4/4, Accessibility 20/21, Best Practices 6/6, SEO 4/4 (captured 22 Sep 2025).
+- Run `npm run build` to ensure Next.js compiles cleanly.
+- Capture a Lighthouse PWA report in Chrome DevTools and stash scores alongside release notes.
+
+## Translation Review
+- Share updated stage hints and `brew.protozoa` copy (including `protozoaHelp`) with native FR/PT reviewers before release.
+- Confirm `common.persistenceError` messaging in both locales aligns with support tone.
+

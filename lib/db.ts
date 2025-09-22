@@ -1,4 +1,7 @@
 // SSR-safe guard: only access PouchDB in browser
+const stubDbCache = new Map<string, any>();
+const browserDbCache = new Map<string, Promise<any>>();
+
 function isBrowser() {
   return typeof window !== 'undefined' && typeof document !== 'undefined';
 }
@@ -7,18 +10,30 @@ export type Doc<T> = T & { _id: string; _rev?: string };
 
 export async function openDB(name: string): Promise<any> {
   if (!isBrowser()) {
-    // Minimal mock for SSR: methods that won't run during prerender
-    return {
-      async get() { throw new Error('DB unavailable during SSR'); },
-      async put() { throw new Error('DB unavailable during SSR'); },
-      async remove() { throw new Error('DB unavailable during SSR'); },
-      async allDocs() { return { rows: [] } as any; },
-      async bulkDocs() { return []; }
-    } as any;
+    if (!stubDbCache.has(name)) {
+      stubDbCache.set(name, {
+        async get() { throw new Error('DB unavailable during SSR'); },
+        async put() { throw new Error('DB unavailable during SSR'); },
+        async remove() { throw new Error('DB unavailable during SSR'); },
+        async allDocs() { return { rows: [] } as any; },
+        async bulkDocs() { return []; }
+      } as any);
+    }
+    return stubDbCache.get(name);
   }
-  const mod = await import('pouchdb-browser');
-  const PouchDB = (mod as any).default || (mod as any);
-  return new PouchDB(name);
+
+  if (browserDbCache.has(name)) {
+    return browserDbCache.get(name)!;
+  }
+
+  const dbPromise = (async () => {
+    const mod = await import('pouchdb-browser');
+    const PouchDB = (mod as any).default || (mod as any);
+    return new PouchDB(name);
+  })();
+
+  browserDbCache.set(name, dbPromise);
+  return dbPromise;
 }
 
 export async function getDoc<T>(db: any, id: string): Promise<Doc<T> | null> {

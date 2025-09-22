@@ -119,10 +119,10 @@ const resources = {
         "regionLabel": "Region (optional)",
         "regionPlaceholder": "GLOBAL (default) or e.g., US, EU, ZA",
         "aactGuidance": "AACT guidance: continuous aeration, typical 18-24h window. Avoid overheating; keep water oxygenated.",
-        "hintSeedling": "Gentle biology; avoid strong doses. Focus on light inoculation and low surfactant.",
-        "hintVeg": "Build root mass and structure. Balanced carbs; modest surfactant for infiltration.",
-        "hintEarly": "Transition phase; start increasing carbohydrate support and gentle biostimulants.",
-        "hintLate": "Energy-intensive secondary metabolism; ensure sustained carb inputs and careful dosing.",
+        "hintSeedling": "Keep biology gentle: max 1 ml/L carbs, minimal surfactant, focus on inoculating roots.",
+        "hintVeg": "Build root mass and infiltration: around 2 ml/L carbs, add humic + seaweed, light surfactant.",
+        "hintEarly": "Transition to bloom: hold 3 ml/L carbs steady, layer in fulvic, watch canopy colour.",
+        "hintLate": "High energy demand: 4-5 ml/L carbs in steady feed, keep aloe near 5%, avoid sugar spikes.",
         "bulletLate": "Ensure sustained, steady carbohydrate inputs (e.g., molasses); avoid sugar spikes.",
         "bulletSeedling": "Prefer very light biology and low surfactant doses.",
         "bulletVeg": "Support root hair development and infiltration for vigorous growth.",
@@ -132,6 +132,7 @@ const resources = {
         "comfreyBullet2": "Human safety: contains pyrrolizidine alkaloids - do not ingest; avoid foliar on edible leaves near harvest.",
         "comfreyBullet3": "Position as a supplement; seaweed/humic/fulvic remain the primary, well-documented biostimulants.",
         "footerNote": "Guidance based on your research summary: yucca saponins preferred; Quillaja/soapwort when yucca is scarce; aloe ~5% v/v.",
+        "protozoaHelp": "Lucerne tea is optional — use it when soils need a quick protozoa/earthworm boost.",
         "protozoa": {
           "title": "Protozoa Boost: Lucerne Tea",
           "intro": "Aerated lucerne (alfalfa) tea feeds bacteria, explodes protozoa, and draws earthworms for better nitrogen cycling.",
@@ -198,7 +199,9 @@ const resources = {
         "copied": "Copied",
         "copyFailed": "Copy failed",
         "shared": "Shared",
-        "printedOn": "Printed on"
+        "printedOn": "Printed on",
+        "persistenceError": "Could not save to local storage. Retry after freeing space or reloading.",
+        "dismiss": "Dismiss"
       },
       "pwa": {
         "updateAvailable": "A new version is available.",
@@ -324,10 +327,10 @@ const resources = {
         "regionLabel": "Région (optionnel)",
         "regionPlaceholder": "GLOBAL (par défaut) ou ex. US, EU, ZA",
         "aactGuidance": "Guide AACT : aération continue, fenêtre typique 18-24 h. Évitez la surchauffe ; gardez l'eau oxygénée.",
-        "hintSeedling": "Biologie douce ; évitez les fortes doses. Favorisez une inoculation légère et peu de surfactant.",
-        "hintVeg": "Développez la masse racinaire. Glucides équilibrés ; surfactant modéré pour l'infiltration.",
-        "hintEarly": "Phase de transition : augmentez le soutien en glucides et les biostimulants doux.",
-        "hintLate": "Métabolisme secondaire intense : assurez des apports réguliers et maîtrisés.",
+        "hintSeedling": "Gardez la biologie douce : maximum 1 ml/L de glucides, très peu de surfactant, concentrez-vous sur l'inoculation des racines.",
+        "hintVeg": "Développez la masse racinaire et l'infiltration : environ 2 ml/L de glucides, ajoutez humiques + algues, surfactant léger.",
+        "hintEarly": "Transition florale : maintenez 3 ml/L de glucides réguliers, ajoutez du fulvique, surveillez la couleur du feuillage.",
+        "hintLate": "Forte demande énergétique : 4-5 ml/L de glucides en apport stable, aloe autour de 5 %, évitez les pics de sucre.",
         "bulletLate": "Assurez un apport régulier de glucides (ex. mélasse) ; évitez les pics.",
         "bulletSeedling": "Privilégiez des apports très légers et peu de surfactant.",
         "bulletVeg": "Soutenez les poils absorbants et l'infiltration pour une croissance vigoureuse.",
@@ -337,32 +340,33 @@ const resources = {
         "comfreyBullet2": "Sécurité : contient des alcaloïdes pyrrolizidiniques ; ne pas ingérer, évitez la pulvérisation sur les feuilles comestibles avant récolte.",
         "comfreyBullet3": "Positionnez-le comme complément ; algues/humiques/fulviques restent les biostimulants principaux.",
         "footerNote": "Recommandations basées sur votre synthèse : saponines de yucca privilégiées ; Quillaja/savonaria lorsque la yucca est rare ; aloe ~5 % v/v.",
+        "protozoaHelp": "Le thé de luzerne est optionnel — utilisez-le quand le sol a besoin d'un coup de pouce protozoaires/vers de terre.",
         "protozoa": {
-          "title": "Protozoa Boost: Lucerne Tea",
-          "intro": "Aerated lucerne (alfalfa) tea feeds bacteria, explodes protozoa, and draws earthworms for better nitrogen cycling.",
-          "standardHeading": "Standard 20 L recipe",
+          "title": "Coup de boost protozoaires : thé de luzerne",
+          "intro": "Un thé de luzerne (alfalfa) aéré nourrit les bactéries, déclenche une explosion de protozoaires et attire les vers de terre pour améliorer le cycle de l'azote.",
+          "standardHeading": "Recette standard 20 L",
           "standardItems": [
-            "500 g fresh, chemical-free lucerne, chopped finely",
-            "20 L non-chlorinated water",
-            "100 mL molasses",
-            "200 mL fish/kelp/fulvic blend",
-            "Optional: handful of comfrey leaves",
-            "Aerate gently 24-36 h; apply within 24 h"
+            "500 g de luzerne fraîche, sans produits chimiques, finement hachée",
+            "20 L d'eau non chlorée",
+            "100 mL de mélasse",
+            "200 mL de mélange poisson/kelp/fulvique",
+            "Optionnel : poignée de feuilles de consoude",
+            "Aération douce 24-36 h ; appliquer dans les 24 h"
           ],
-          "bulkHeading": "Scaled 200 L recipe",
+          "bulkHeading": "Recette montée à 200 L",
           "bulkItems": [
-            "3 kg lucerne hay per 200 L water (approx. 1.5% w/v)",
-            "2 L molasses",
-            "2 L fish emulsion",
-            "Optional: brew bacterial tea first (24 h), then add lucerne for 48 h"
+            "3 kg de foin de luzerne pour 200 L d'eau (~1.5 % m/v)",
+            "2 L de mélasse",
+            "2 L d'émulsion de poisson",
+            "Optionnel : préparer un thé bactérien pendant 24 h puis ajouter la luzerne pour 48 h"
           ],
-          "keyHeading": "Brewing notes",
+          "keyHeading": "Notes de brassage",
           "keyItems": [
-            "Maintain fine-bubble aeration; avoid anaerobic odors",
-            "Keep between 20-24 C (68-75 F) for peak protozoa activity",
-            "Use chemical-free lucerne and chlorine-free water",
-            "Protozoa peak around 36-48 h; apply promptly",
-            "Molasses is essential - powers bacteria that protozoa graze"
+            "Maintenir une aération à fines bulles ; éviter les odeurs anaérobies",
+            "Garder entre 20-24 C (68-75 F) pour une activité protozoaire maximale",
+            "Utiliser une luzerne sans traitement et une eau sans chlore",
+            "Les protozoaires culminent autour de 36-48 h ; appliquer rapidement",
+            "La mélasse est essentielle - elle alimente les bactéries dont se nourrissent les protozoaires"
           ]
         }
       },
@@ -403,7 +407,9 @@ const resources = {
         "copied": "Copié",
         "copyFailed": "Copie échouée",
         "shared": "Partagé",
-        "printedOn": "Imprimé le"
+        "printedOn": "Imprimé le",
+        "persistenceError": "Impossible d'enregistrer localement. Réessayez après avoir libéré de l'espace ou rechargé.",
+        "dismiss": "Fermer"
       },
       "pwa": {
         "updateAvailable": "Une nouvelle version est disponible.",
@@ -529,10 +535,10 @@ const resources = {
         "regionLabel": "Região (opcional)",
         "regionPlaceholder": "GLOBAL (padrão) ou ex.: US, EU, ZA",
         "aactGuidance": "Guia AACT: aeração contínua, janela típica de 18-24 h. Evite superaquecimento; mantenha a água oxigenada.",
-        "hintSeedling": "Biologia suave; evite doses fortes. Foque em inoculação leve e pouco surfactante.",
-        "hintVeg": "Desenvolva o sistema radicular. Carboidratos equilibrados; surfactante moderado para infiltração.",
-        "hintEarly": "Fase de transição: aumente o suporte de carboidratos e biostimulantes suaves.",
-        "hintLate": "Metabolismo secundário intenso: mantenha aportes constantes e bem dosados.",
+        "hintSeedling": "Mantenha a biologia suave: no máximo 1 ml/L de carboidratos, mínimo surfactante, foque em inocular as raízes.",
+        "hintVeg": "Construa massa radicular e infiltração: cerca de 2 ml/L de carboidratos, adicione húmicos + algas, pouco surfactante.",
+        "hintEarly": "Transição para florescimento: mantenha 3 ml/L de carboidratos constantes, inclua fúlvico, observe a cor da copa.",
+        "hintLate": "Alta demanda energética: 4-5 ml/L de carboidratos em aporte estável, aloe perto de 5%, evite picos de açúcar.",
         "bulletLate": "Garanta carboidratos constantes (ex.: melado); evite picos de açúcar.",
         "bulletSeedling": "Prefira biologia muito leve e pouco surfactante.",
         "bulletVeg": "Apoie os pelos radiculares e a infiltração para máximo vigor.",
@@ -542,32 +548,33 @@ const resources = {
         "comfreyBullet2": "Segurança: contém alcaloides pirrolizidínicos — não ingerir; evite aplicação foliar em folhas comestíveis perto da colheita.",
         "comfreyBullet3": "Use como complemento; algas/húmicos/fúlvicos continuam sendo os biostimulantes principais.",
         "footerNote": "Orientações baseadas na sua síntese: saponinas de yucca são preferenciais; Quillaja/soapwort quando a yucca estiver escassa; aloe ~5% v/v.",
+        "protozoaHelp": "O chá de alfafa é opcional — use quando o solo precisa de um impulso rápido de protozoários/minhocas.",
         "protozoa": {
-          "title": "Protozoa Boost: Lucerne Tea",
-          "intro": "Aerated lucerne (alfalfa) tea feeds bacteria, explodes protozoa, and draws earthworms for better nitrogen cycling.",
-          "standardHeading": "Standard 20 L recipe",
+          "title": "Impulso de protozoários: chá de alfafa",
+          "intro": "O chá aerado de alfafa (lucerne) alimenta as bactérias, multiplica os protozoários e atrai minhocas, melhorando o ciclo do nitrogênio.",
+          "standardHeading": "Receita padrão de 20 L",
           "standardItems": [
-            "500 g fresh, chemical-free lucerne, chopped finely",
-            "20 L non-chlorinated water",
-            "100 mL molasses",
-            "200 mL fish/kelp/fulvic blend",
-            "Optional: handful of comfrey leaves",
-            "Aerate gently 24-36 h; apply within 24 h"
+            "500 g de alfafa fresca, sem químicos, picada fina",
+            "20 L de água sem cloro",
+            "100 mL de melaço",
+            "200 mL de mistura peixe/alga/ácido fúlvico",
+            "Opcional: punhado de folhas de consolda",
+            "Aerare suavemente por 24-36 h; aplicar em até 24 h"
           ],
-          "bulkHeading": "Scaled 200 L recipe",
+          "bulkHeading": "Versão escalada para 200 L",
           "bulkItems": [
-            "3 kg lucerne hay per 200 L water (approx. 1.5% w/v)",
-            "2 L molasses",
-            "2 L fish emulsion",
-            "Optional: brew bacterial tea first (24 h), then add lucerne for 48 h"
+            "3 kg de feno de alfafa para 200 L de água (~1.5 % m/v)",
+            "2 L de melaço",
+            "2 L de emulsão de peixe",
+            "Opcional: faça primeiro um chá bacteriano (24 h) e depois adicione a alfafa por mais 48 h"
           ],
-          "keyHeading": "Brewing notes",
+          "keyHeading": "Notas de preparo",
           "keyItems": [
-            "Maintain fine-bubble aeration; avoid anaerobic odors",
-            "Keep between 20-24 C (68-75 F) for peak protozoa activity",
-            "Use chemical-free lucerne and chlorine-free water",
-            "Protozoa peak around 36-48 h; apply promptly",
-            "Molasses is essential - powers bacteria that protozoa graze"
+            "Manter aeração de bolhas finas; evitar odores anaeróbios",
+            "Manter entre 20-24 C (68-75 F) para máxima atividade de protozoários",
+            "Usar alfafa sem tratamento e água sem cloro",
+            "Protozoários atingem o pico em 36-48 h; aplicar imediatamente",
+            "Melaço é essencial - alimenta as bactérias das quais os protozoários se nutrem"
           ]
         }
       },
@@ -608,7 +615,9 @@ const resources = {
         "copied": "Copiado",
         "copyFailed": "Falha na cópia",
         "shared": "Compartilhado",
-        "printedOn": "Impresso em"
+        "printedOn": "Impresso em",
+        "persistenceError": "Não foi possível salvar localmente. Tente novamente após liberar espaço ou recarregar.",
+        "dismiss": "Dispensar"
       },
       "pwa": {
         "updateAvailable": "Uma nova versão está disponível.",

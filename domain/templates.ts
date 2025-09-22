@@ -75,10 +75,30 @@ function sourceKeyToIngredientId(key?: 'molasses' | 'millet' | 'oat' | 'other') 
   }
 }
 
+function normalizeUnit(unit: string): { amountUnit: string; perUnit: string } {
+  const trimmed = (unit || '').trim();
+  if (!trimmed) {
+    return { amountUnit: 'unit', perUnit: 'L' };
+  }
+  if (trimmed.includes('/')) {
+    const [amount, per] = trimmed.split('/', 2);
+    return { amountUnit: amount.trim() || 'unit', perUnit: per.trim() || 'L' };
+  }
+  const perParts = trimmed.split(/\s+per\s+/i);
+  if (perParts.length === 2) {
+    return { amountUnit: perParts[0].trim() || 'unit', perUnit: perParts[1].trim() || 'L' };
+  }
+  return { amountUnit: trimmed, perUnit: '' };
+}
+
 function totalFromPerLiter(unit: string, perL: number, L: number) {
   const total = perL * L;
   const round = (n: number) => Math.round(n * 100) / 100;
-  return `${round(perL)} ${unit} per L (${round(total)} ${unit} total)`;
+  const normalized = normalizeUnit(unit);
+  const amountUnit = normalized.amountUnit;
+  const perUnit = normalized.perUnit;
+  const perPhrase = perUnit ? ` per ${perUnit}` : '';
+  return `${round(perL)} ${amountUnit}${perPhrase} (${round(total)} ${amountUnit} total)`;
 }
 
 export function buildStageRecipe(ctx: TemplateCtx): RecipeItem[] {

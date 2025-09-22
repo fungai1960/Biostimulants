@@ -1,4 +1,5 @@
 "use client";
+import React from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { suggestSubstitutes } from '../../domain/substitution';
@@ -87,6 +88,7 @@ export default function BrewPage() {
     try {
       const db = await openDB('sba-settings');
       await upsertDoc(db, 'brew-presets', { items });
+      setErrorMessage(null);
     } catch (err) {
       console.error('Failed to persist brew presets', err);
     }
@@ -120,14 +122,19 @@ export default function BrewPage() {
     return () => { mounted = false; };
   }, []);
   useEffect(() => {
-    if (!loaded) return; // don't write defaults before initial load
-    (async () => {
+    if (!loaded) return;
+    const timer = window.setTimeout(async () => {
       try {
         const db = await openDB('sba-settings');
         await upsertDoc(db, 'brew', inputs as any);
-      } catch (err) { console.error('Failed to persist brew inputs', err); }
-    })();
-  }, [inputs, loaded]);
+        setErrorMessage(null);
+      } catch (err) {
+        console.error('Failed to persist brew inputs', err);
+        setErrorMessage(t('common.persistenceError'));
+      }
+    }, 300);
+    return () => window.clearTimeout(timer);
+  }, [inputs, loaded, t]);
 
   // Load on-hand inventory ids
   useEffect(() => {
@@ -290,8 +297,7 @@ export default function BrewPage() {
   const exportRecipeCsv = () => {
     const header = ['id','name','amount','note'];
     const rows = templateItems.map(it => [it.id, it.name, it.amount, it.note ?? '']);
-    const csv = [header.join(','), ...rows.map(r => r.map(v => JSON.stringify(v ?? '')).join(','))].join('
-');
+    const csv = [header.join(','), ...rows.map(r => r.map(v => JSON.stringify(v ?? '')).join(','))].join('\n');
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -306,8 +312,7 @@ export default function BrewPage() {
 Volume: ${inputs.volumeLiters} L
 Aloe: ${inputs.aloePercent}% v/v
 
-` + lines.join('
-');
+` + lines.join('\n');
     try {
       await navigator.clipboard.writeText(text);
       return true;
@@ -316,11 +321,11 @@ Aloe: ${inputs.aloePercent}% v/v
     }
   };
   const [copyStatus, setCopyStatus] = useState<string>('');
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const saveDraftLog = async () => {
     try {
       const db = await openDB('sba-logs');
-      const text = templateItems.map(it => `${it.name}: ${it.amount}${it.note ? ` — ${it.note}` : ''}`).join('
-');
+      const text = templateItems.map(it => `${it.name}: ${it.amount}${it.note ? ` — ${it.note}` : ''}`).join('\n');
       const draft = {
         id: 'draft-log',
         date: new Date().toISOString().slice(0,10),
@@ -330,14 +335,26 @@ Aloe: ${inputs.aloePercent}% v/v
         outcomes: text
       } as any;
       await upsertDoc(db, 'draft-log', draft);
+      setErrorMessage(null);
       return true;
-    } catch {
+    } catch (err) {
+      console.error('Failed to persist draft log', err);
+      setErrorMessage(t('common.persistenceError'));
       return false;
     }
   };
 
   return (
     <main className="max-w-xl mx-auto p-6 space-y-6">
+      {errorMessage && (
+        <div className="mb-4 rounded border border-red-200 bg-red-50 text-sm text-red-800 p-3 flex items-start justify-between" role="alert" aria-live="assertive">
+          <span>{errorMessage}</span>
+          <button type="button" onClick={() => setErrorMessage(null)} className="ml-3 text-xs font-medium text-red-800 underline">
+            {t('common.dismiss')}
+          </button>
+        </div>
+      )}
+
       <header>
         <h1 className="text-2xl font-semibold mb-1">{t('brew.header')}</h1>
         <p className="text-sm text-gray-600">{t('brew.subheader')}</p>
@@ -531,14 +548,13 @@ Aloe: ${inputs.aloePercent}% v/v
           {presets.map(p => (
             <div key={p.id} className="flex items-center gap-2 border rounded px-2 py-1 text-sm">
               <span className="font-medium">{p.name}</span>
-              <button onClick={() => setInputs({
-                yuccaAvailable: p.yuccaAvailable,
-                aloeAvailable: p.aloeAvailable,
-                aloePercent: p.aloePercent,
-                volumeLiters: p.volumeLiters,
-                stage: p.stage,
-                region: p.region
-              })} className="px-2 py-0.5 border rounded text-xs focus:outline-none focus:ring-2 focus:ring-green-500">{t('brew.apply')}</button>
+              <button onClick={() => {
+                const { id: presetId, name: presetName, ...rest } = p;
+                void presetId;
+                void presetName;
+                setInputs(prev => ({ ...prev, ...rest }));
+                setCarbTouched(true);
+              }} className="px-2 py-0.5 border rounded text-xs focus:outline-none focus:ring-2 focus:ring-green-500">{t('brew.apply')}</button>
               <button onClick={() => { if (!(window.confirm(t('brew.deleteConfirm', { name: p.name }) as string))) return; const next = presets.filter(x => x.id !== p.id); setPresets(next); persistPresets(next); }} className="px-2 py-0.5 border rounded text-xs focus:outline-none focus:ring-2 focus:ring-red-500 text-red-700 border-red-300">{t('brew.delete')}</button>
             </div>
           ))}
@@ -591,8 +607,10 @@ Aloe: ${inputs.aloePercent}% v/v
                   const db = await openDB('sba-settings');
                   await upsertDoc(db, 'inventory', { ids: invDraft });
                   setInventory(invDraft);
+                  setErrorMessage(null);
                 } catch (err) {
                   console.error('Failed to update inventory', err);
+                  setErrorMessage(t('common.persistenceError'));
                 }
                 setInvEditorOpen(false);
               }} className="px-3 py-2 border rounded text-sm bg-green-600 text-white border-green-700 focus:outline-none focus:ring-2 focus:ring-green-500">{t('brew.save')}</button>
@@ -616,8 +634,7 @@ Aloe: ${inputs.aloePercent}% v/v
             <button onClick={exportRecipeCsv} className="px-3 py-1 border rounded text-xs focus:outline-none focus:ring-2 focus:ring-green-500">{t('brew.exportRecipeCsv')}</button>
             <button onClick={async () => { const ok = await copyRecipeText(); setCopyStatus(ok ? 'copied' : 'failed'); setTimeout(() => setCopyStatus(''), 1500); }} className="px-3 py-1 border rounded text-xs focus:outline-none focus:ring-2 focus:ring-green-500">{t('brew.copyRecipe')}</button>
             <button onClick={async () => {
-              const lines = templateItems.map(it => `${it.name}: ${it.amount}${it.note ? ` — ${it.note}` : ''}`).join('
-');
+              const lines = templateItems.map(it => `${it.name}: ${it.amount}${it.note ? ` — ${it.note}` : ''}`).join('\n');
               const text = `Stage: ${inputs.stage}
 Volume: ${inputs.volumeLiters} L
 Aloe: ${inputs.aloePercent}% v/v
@@ -700,7 +717,10 @@ ${lines}`;
       </section>
 
       <section className="p-4 bg-white rounded-md shadow border print:hidden">
-        <h2 className="font-medium mb-2">{protozoa.title}</h2>
+        <div className="flex items-center gap-2 mb-2">
+          <h2 className="font-medium">{protozoa.title}</h2>
+          <button type="button" className="text-xs px-2 py-1 border border-green-300 rounded text-green-700 hover:bg-green-50" title={t('brew.protozoaHelp')} aria-label={t('brew.protozoaHelp')}>?</button>
+        </div>
         <p className="text-sm text-gray-700 mb-3">{protozoa.intro}</p>
         <div className="grid gap-4 md:grid-cols-2 text-sm">
           <div>
